@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Odin Project - Recursion Visualizer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.6);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --accent: #8b5cf6;
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-color);
+            background-image:
+                radial-gradient(circle at 15% 50%, rgba(59, 130, 246, 0.15), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.15), transparent 25%);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 3rem 1rem;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(to right, #60a5fa, #c084fc);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        input {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid var(--border-color);
+            color: var(--text);
+            padding: 0.8rem 1.2rem;
+            border-radius: 10px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            flex: 1;
+            min-width: 200px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            border-color: var(--primary);
+        }
+
+        button {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 10px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.3s, transform 0.1s;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        .result-box {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            min-height: 80px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .number-badge {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            opacity: 0;
+            transform: scale(0.5);
+        }
+
+        @keyframes popIn {
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .log-box {
+            margin-top: 1rem;
+            font-family: monospace;
+            font-size: 0.9rem;
+            color: #34d399;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Algorithm Visualizer</h1>
+    <p class="subtitle">The Odin Project - Recursion</p>
+
+    <div class="container">
+        <!-- Tarjeta para Fibonacci -->
+        <div class="card">
+            <h2>🌀 Secuencia de Fibonacci</h2>
+            <div class="controls">
+                <input type="number" id="fib-input" placeholder="Ingresa un número (ej. 8)" value="8" min="1">
+                <button onclick="runFibonacci()">Generar Secuencia</button>
+            </div>
+            <div class="result-box" id="fib-result">
+                <!-- Los números aparecerán aquí -->
+            </div>
+            <div class="log-box" id="fib-logs"></div>
+        </div>
+
+        <!-- Tarjeta para Merge Sort -->
+        <div class="card">
+            <h2>🧩 Merge Sort</h2>
+            <div class="controls">
+                <input type="text" id="merge-input" placeholder="Ej. 3, 2, 1, 13, 8, 5, 0, 1"
+                    value="3, 2, 1, 13, 8, 5, 0, 1">
+                <button onclick="runMergeSort()">Ordenar Array</button>
+            </div>
+            <div class="result-box" id="merge-result">
+                <!-- Los números ordenados aparecerán aquí -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- LÓGICA DE FIBONACCI RECURSIVO ---
+        let fibLogs = 0; // Contador para mostrar cuántas veces se imprimió recursivamente
+
+        function fibsRec(n) {
+            fibLogs++; // Simulamos el console.log del ejercicio
+            if (n <= 0) return [];
+            if (n === 1) return [0];
+            if (n === 2) return [0, 1];
+
+            const arr = fibsRec(n - 1);
+            arr.push(arr[arr.length - 1] + arr[arr.length - 2]);
+            return arr;
+        }
+
+        function runFibonacci() {
+            const inputVal = parseInt(document.getElementById('fib-input').value);
+            const resultBox = document.getElementById('fib-result');
+            const logBox = document.getElementById('fib-logs');
+
+            resultBox.innerHTML = '';
+            fibLogs = 0;
+
+            if (isNaN(inputVal) || inputVal < 1) {
+                resultBox.innerHTML = '<span style="color: #ef4444;">Por favor ingresa un número válido mayor a 0.</span>';
+                return;
+            }
+
+            const result = fibsRec(inputVal);
+
+            // Renderizar con animación retrasada para cada número
+            result.forEach((num, index) => {
+                const span = document.createElement('span');
+                span.className = 'number-badge';
+                span.textContent = num;
+                span.style.animationDelay = `${index * 0.1}s`; // Efecto cascada
+                resultBox.appendChild(span);
+            });
+
+            logBox.textContent = `"This was printed recursively" fue llamado ${fibLogs} veces.`;
+        }
+
+
+        // --- LÓGICA DE MERGE SORT ---
+        function mergeSort(arr) {
+            if (arr.length <= 1) return arr;
+            const mid = Math.floor(arr.length / 2);
+            const left = mergeSort(arr.slice(0, mid));
+            const right = mergeSort(arr.slice(mid));
+            return merge(left, right);
+        }
+
+        function merge(left, right) {
+            const sorted = [];
+            let i = 0, j = 0;
+            while (i < left.length && j < right.length) {
+                if (left[i] < right[j]) {
+                    sorted.push(left[i]);
+                    i++;
+                } else {
+                    sorted.push(right[j]);
+                    j++;
+                }
+            }
+            while (i < left.length) { sorted.push(left[i]); i++; }
+            while (j < right.length) { sorted.push(right[j]); j++; }
+            return sorted;
+        }
+
+        function runMergeSort() {
+            const inputStr = document.getElementById('merge-input').value;
+            const resultBox = document.getElementById('merge-result');
+            resultBox.innerHTML = '';
+
+            // Convertir el string de entrada en un array de números
+            const arr = inputStr.split(',')
+                .map(item => item.trim())
+                .filter(item => item !== '')
+                .map(Number);
+
+            if (arr.some(isNaN)) {
+                resultBox.innerHTML = '<span style="color: #ef4444;">Por favor asegúrate de ingresar solo números separados por comas.</span>';
+                return;
+            }
+
+            const sortedResult = mergeSort(arr);
+
+            // Renderizar el resultado
+            sortedResult.forEach((num, index) => {
+                const span = document.createElement('span');
+                span.className = 'number-badge';
+                span.textContent = num;
+                // Colores alternativos para diferenciar Merge Sort
+                span.style.background = 'rgba(139, 92, 246, 0.2)';
+                span.style.borderColor = 'rgba(139, 92, 246, 0.4)';
+                span.style.animationDelay = `${index * 0.1}s`;
+                resultBox.appendChild(span);
+            });
+        }
+
+        // Ejecutar una vez al cargar la página para que no esté vacío
+        runFibonacci();
+        runMergeSort();
+    </script>
+</body>
+
+</html>
